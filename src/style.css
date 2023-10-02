@@ -61,7 +61,6 @@
     margin-top: 2px;
     background-color: var(--snowy-white);
     height: 5px;
-    width: 300px;
     cursor: pointer;
 }
 
@@ -97,4 +96,19 @@
     background-color: var(--pink);
     box-shadow: var(--pink) 0px 0px 6px;
     color: var(--snowy-white);
+}
+
+@media (max-width: 375px) {
+    .music-player {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        border-radius: 0px;
+        justify-content: center;
+    }
+    .song-thumbnail{
+        width: 250px;
+    }
 }

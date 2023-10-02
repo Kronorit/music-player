@@ -1,3 +1,6 @@
+import { stripeNumber, convertTime } from "./assets/functions.js";
+import { nextSong, togglePlay, backSong } from "./assets/buttonsFunctions.js";
+
 const player = document.querySelector('.player');
 const playButton = document.querySelector('.play-button');
 const forwardButton = document.querySelector('.forward-button');
@@ -15,9 +18,10 @@ const songTimerCurrent = document.querySelector('.timer-current')
 let currentSong;
 let wasBarClicked;
 let barXPosition;
-let barYPosition;
 let mouseXPosition;
-let mouseYPosition;
+let progressWidth;
+let progressBarWidth = stripeNumber(progressBar.style.width);
+let songDuration;
 
 let songs = [
     {
@@ -34,19 +38,12 @@ let songs = [
     }
 ];
 
-/* Función para extraer la parte númerica de un width */
+function moveBar(bar, barXPosition) {
+    bar.style.width = `${barXPosition}px`;
+}   
 
-function stripeNumber(string) {
-    let number = '';
-    let letter;
-    for(index in string) {
-        letter = parseFloat(string[index]);
-        if (!isNaN(letter)) {
-            number += string[index];
-        }
-    }
-
-    return parseFloat(number);
+function setPlayerTime(player, time) {
+    player.currentTime = time;
 }
 
 /* Carga la canción */
@@ -56,44 +53,11 @@ function load(element) {
     currentSong = element;
 }
 
-/* Convierte los timers a minutos y segundos válidos */
-
-function convertTime(number) {
-    let minutes = number / 60;
-    let intMinutes = Math.trunc(minutes);
-    let seconds = minutes - intMinutes;
-    seconds *= 60;
-
-    Math.trunc(seconds) < 10 ?
-            seconds = `0${Math.trunc(seconds)}`:
-            seconds = Math.trunc(seconds);
-
-    return `${intMinutes}:${seconds}`;
-}
-
-/* Cambia la música a la siguiente o al comienzo */
-
-function nextSong() {
-    if(songs.indexOf(currentSong) + 1 == songs.length) {
-        load(songs[0])
-    } else {
-        load(songs[songs.indexOf(currentSong) + 1]);
-    }
-}
-
-/* Cambia la música a la anterior o al final */
-
-function backSong() {
-    if(songs.indexOf(currentSong) == 0) {
-        load(songs[songs.length - 1])
-    } else {
-        load(songs[songs.indexOf(currentSong) - 1]);
-    }
-}
-
 /* Renderiza los datos de la canción */
 
 function render() {
+    songDuration = player.duration;
+
     songThumbnail.src = currentSong.thumbnail;
     songTitle.innerText = currentSong.title;
     songAuthor.innerText = currentSong.author;
@@ -102,18 +66,17 @@ function render() {
     player.play()
 }
 
-function togglePlay() {
-    player.paused ? player.play() : player.pause();
-}
+/* Event listeners para los botones */ 
 
-playButton.addEventListener('click', togglePlay);
-forwardButton.addEventListener('click', nextSong);
-backwardButton.addEventListener('click', backSong);
+playButton.addEventListener('click', ()=>{togglePlay(player)});
+forwardButton.addEventListener('click', ()=>{load(nextSong(songs, currentSong))});
+backwardButton.addEventListener('click', ()=>{load(backSong(songs, currentSong))});
 
-player.addEventListener('loadeddata', render);
+/* Event listeners de la barra de reproducción */
 
 player.addEventListener('timeupdate', (e) => {
-    progress.style.width = `${(player.currentTime * 100 / player.duration) * 300 / 100}px`;
+    let barPosition = (player.currentTime * 100 / player.duration) * 300 / 100
+    moveBar(progress, barPosition);
     songTimerCurrent.innerText = convertTime(player.currentTime);
 });
 
@@ -121,46 +84,51 @@ progressBar.addEventListener('mousedown', (e) => {
     player.pause()
     wasBarClicked = true;
     barXPosition = e.target.offsetLeft;
-    barYPosition = e.target.offsetTop;
-
-    let mouseXPosition = e.offsetX;
-    let progressWidth;
-    let progressBarWidth = stripeNumber(progressBar.style.width);
-    let songDuration = player.duration;
     
-    progress.style.width = `${mouseXPosition}px`;
+    let mouseXPosition = e.offsetX;
+    
+    moveBar(progress, mouseXPosition);
     progressWidth = stripeNumber(progress.style.width);
 
-    player.currentTime = (progressWidth / progressBarWidth * 100) * songDuration / 100
+    setPlayerTime(player, (progressWidth / progressBarWidth * 100) * songDuration / 100);
     return false;
 });
 
 document.addEventListener('mousemove', (e) => {
     e.preventDefault()
-    let progressWidth = stripeNumber(progress.style.width);
-    let progressBarWidth = stripeNumber(progressBar.style.width);
-
-    mouseXPosition = e.x;
-    mouseYPosition = e.y;
-    let mouseMovementX = e.movementX;
     if(wasBarClicked) {
+        
+        mouseXPosition = e.x;
         if(e.x < barXPosition) {
-            progress.style.width = '0px';
+            moveBar(progress, 0);
         } else if(e.x > barXPosition + progressBarWidth) {
-            progress.style.width = `${progressBarWidth}px`
+            moveBar(progress, progressBarWidth);
         } else {
-            if(mouseMovementX + progressWidth > 300) {
-                progress.style.width = '300px'
-            } else {
-                progress.style.width = `${mouseMovementX + progressWidth}px`;
-            }
+            moveBar(progress, mouseXPosition - barXPosition);
         }
+        progressWidth = stripeNumber(progress.style.width)
+        setPlayerTime(player, (progressWidth / progressBarWidth * 100) * songDuration / 100);
     }
 })
 
 document.addEventListener('mouseup', () => {
-    if(wasBarClicked) wasBarClicked = false;
+    if(wasBarClicked) {
+        wasBarClicked = false
+        player.play();
+    };
     return false;
 })
 
+/* Carga de la canción y renderizado de elementos */
+
+player.addEventListener('loadeddata', render);
+
 load(songs[Math.round(Math.random())]);
+
+window.matchMedia("(max-width: 375px").addEventListener('change', () => {
+    progressBar.style.width = '200px';
+})
+
+window.matchMedia("(min-width: 376px").addEventListener('change', () => {
+    progressBar.style.width = '300px';
+})
