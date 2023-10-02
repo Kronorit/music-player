@@ -2,7 +2,8 @@ const player = document.querySelector('.player');
 const playButton = document.querySelector('.play-button');
 const forwardButton = document.querySelector('.forward-button');
 const backwardButton = document.querySelector('.backward-button');
-const progressBar= document.querySelector('.progress');
+const progress= document.querySelector('.progress');
+const progressBar= document.querySelector('.progress-bar');
 const songTitle = document.querySelector('.title');
 const songAuthor = document.querySelector('.author');
 const songThumbnail = document.querySelector('.song-thumbnail');
@@ -25,6 +26,19 @@ let songs = [
         thumbnail: './src/img/cover-2.png'
     }
 ];
+
+function stripeNumber(string) {
+    let number = '';
+    let letter;
+    for(index in string) {
+        letter = parseFloat(string[index]);
+        if (!isNaN(letter)) {
+            number += string[index];
+        }
+    }
+
+    return parseFloat(number);
+}
 
 /* Carga la canción */
 
@@ -71,7 +85,6 @@ function backSong() {
 /* Renderiza los datos de la canción */
 
 function render() {
-    console.log('hola')
     songThumbnail.src = currentSong.thumbnail;
     songTitle.innerText = currentSong.title;
     songAuthor.innerText = currentSong.author;
@@ -91,8 +104,20 @@ backwardButton.addEventListener('click', backSong);
 player.addEventListener('loadeddata', render);
 
 player.addEventListener('timeupdate', (e) => {
-    progressBar.style.width = `${(player.currentTime * 100 / player.duration) * 300 / 100}px`;
+    progress.style.width = `${(player.currentTime * 100 / player.duration) * 300 / 100}px`;
     songTimerCurrent.innerText = convertTime(player.currentTime);
+});
+
+progressBar.addEventListener('mousedown', (e) => {
+    let mouseXPosition = e.offsetX;
+    let progressWidth;
+    let progressBarWidth = stripeNumber(progressBar.style.width);
+    let songDuration = player.duration;
+    
+    progress.style.width = `${mouseXPosition}px`;
+    progressWidth = stripeNumber(progress.style.width);
+
+    player.currentTime = (progressWidth / progressBarWidth * 100) * songDuration / 100
 });
 
 
