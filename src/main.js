@@ -71,6 +71,7 @@ function backSong() {
 /* Renderiza los datos de la canción */
 
 function render() {
+    console.log('hola')
     songThumbnail.src = currentSong.thumbnail;
     songTitle.innerText = currentSong.title;
     songAuthor.innerText = currentSong.author;
