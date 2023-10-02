@@ -10,7 +10,14 @@ const songThumbnail = document.querySelector('.song-thumbnail');
 const songTimerDuration = document.querySelector('.timer-duration');
 const songTimerCurrent = document.querySelector('.timer-current')
 
+/* Variables de control */
+
 let currentSong;
+let wasBarClicked;
+let barXPosition;
+let barYPosition;
+let mouseXPosition;
+let mouseYPosition;
 
 let songs = [
     {
@@ -26,6 +33,8 @@ let songs = [
         thumbnail: './src/img/cover-2.png'
     }
 ];
+
+/* Función para extraer la parte númerica de un width */
 
 function stripeNumber(string) {
     let number = '';
@@ -109,6 +118,11 @@ player.addEventListener('timeupdate', (e) => {
 });
 
 progressBar.addEventListener('mousedown', (e) => {
+    player.pause()
+    wasBarClicked = true;
+    barXPosition = e.target.offsetLeft;
+    barYPosition = e.target.offsetTop;
+
     let mouseXPosition = e.offsetX;
     let progressWidth;
     let progressBarWidth = stripeNumber(progressBar.style.width);
@@ -118,7 +132,35 @@ progressBar.addEventListener('mousedown', (e) => {
     progressWidth = stripeNumber(progress.style.width);
 
     player.currentTime = (progressWidth / progressBarWidth * 100) * songDuration / 100
+    return false;
 });
 
+document.addEventListener('mousemove', (e) => {
+    e.preventDefault()
+    let progressWidth = stripeNumber(progress.style.width);
+    let progressBarWidth = stripeNumber(progressBar.style.width);
+
+    mouseXPosition = e.x;
+    mouseYPosition = e.y;
+    let mouseMovementX = e.movementX;
+    if(wasBarClicked) {
+        if(e.x < barXPosition) {
+            progress.style.width = '0px';
+        } else if(e.x > barXPosition + progressBarWidth) {
+            progress.style.width = `${progressBarWidth}px`
+        } else {
+            if(mouseMovementX + progressWidth > 300) {
+                progress.style.width = '300px'
+            } else {
+                progress.style.width = `${mouseMovementX + progressWidth}px`;
+            }
+        }
+    }
+})
+
+document.addEventListener('mouseup', () => {
+    if(wasBarClicked) wasBarClicked = false;
+    return false;
+})
 
 load(songs[Math.round(Math.random())]);
