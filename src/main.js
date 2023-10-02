@@ -15,14 +15,14 @@ let songs = [
     {
         title: 'Lost in the City Lights',
         author: 'Cosmo Sheldrake',
-        url: './audio/lost-in-city-lights-145038.mp3',
-        thumbnail: './img/cover-1.png'
+        url: './src/audio/lost-in-city-lights-145038.mp3',
+        thumbnail: './src/img/cover-1.png'
     },
     {
         title: 'Forest Lullaby',
         author: 'Lesfm',
-        url: './audio/forest-lullaby-110624.mp3',
-        thumbnail: './img/cover-2.png'
+        url: './src/audio/forest-lullaby-110624.mp3',
+        thumbnail: './src/img/cover-2.png'
     }
 ];
 
