@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- Fonts Inter -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <section class="music-player">
+            <audio class="player" src=""></audio>
+            <img class="song-thumbnail" src="" alt="Song thumbnail">
+            <h2 class="title"></h2>
+            <p class="author"></p>
+            <div class="time-manager">
+                <div class="timer">
+                    <p class="timer-current"></p>
+                    <p class="timer-duration"></p>
+                </div>
+                <div class="progress-bar"><div class="progress"></div></div>
+            </div>
+            <div class="buttons">
+                <div class="button backward-button">
+                    <i class="fa-solid fa-backward-step"></i>             
+                </div>   
+                <div class="button play-button">
+                    <i class="fa-solid fa-play"></i>                
+                </div>   
+                <div class="button forward-button">
+                    <i class="fa-solid fa-forward-step"></i>               
+                </div>   
+            </div>
+        </section>
+    </div>
+    <script src="./main.js"></script>
+    <script src="https://kit.fontawesome.com/667dcb35ce.js" crossorigin="anonymous"></script>
+</body>
+</html>
