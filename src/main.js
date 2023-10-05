@@ -68,7 +68,10 @@ function render() {
 
 /* Event listeners para los botones */ 
 
-playButton.addEventListener('click', ()=>{togglePlay(player)});
+playButton.addEventListener('click', ()=>{
+    togglePlay(player);
+    
+});
 forwardButton.addEventListener('click', ()=>{load(nextSong(songs, currentSong))});
 backwardButton.addEventListener('click', ()=>{load(backSong(songs, currentSong))});
 
@@ -79,6 +82,9 @@ player.addEventListener('timeupdate', (e) => {
     moveBar(progress, barPosition);
     songTimerCurrent.innerText = convertTime(player.currentTime);
 });
+
+player.addEventListener('play', () => {playButton.classList.toggle('playing')});
+player.addEventListener('pause', () => {playButton.classList.toggle('playing')});
 
 progressBar.addEventListener('mousedown', (e) => {
     player.pause()
@@ -95,7 +101,9 @@ progressBar.addEventListener('mousedown', (e) => {
 });
 
 document.addEventListener('mousemove', (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    
     if(wasBarClicked) {
         
         mouseXPosition = e.x;
@@ -124,6 +132,8 @@ document.addEventListener('mouseup', () => {
 player.addEventListener('loadeddata', render);
 
 load(songs[Math.round(Math.random())]);
+
+/* Media queries */
 
 window.matchMedia("(max-width: 375px").addEventListener('change', () => {
     progressBar.style.width = '200px';

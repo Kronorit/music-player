@@ -7,7 +7,7 @@
 
 :root {
     --pink: #C93B76;
-    --dark-gray:#2129368e;
+    --dark-gray:#212936;
     --light-gray: #4D5562;
     --snowy-white: #E5E7EB;
 }
@@ -17,7 +17,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(30deg, #7a2548c0, #3a0437b9, #200763d5, #060a47d7, #172449ea);
+    background: linear-gradient(30deg, #631d3ac0, #4e054bb9, #27135cd5, #131646d7, #222d4bea);
 }
 
 .music-player {
@@ -93,6 +93,12 @@
 }
 
 .button:hover {
+    background-color: var(--pink);
+    box-shadow: var(--pink) 0px 0px 6px;
+    color: var(--snowy-white);
+}
+
+.playing {
     background-color: var(--pink);
     box-shadow: var(--pink) 0px 0px 6px;
     color: var(--snowy-white);
