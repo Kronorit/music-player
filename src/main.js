@@ -63,8 +63,8 @@ function render() {
     songAuthor.innerText = currentSong.author;
     songTimerCurrent.innerText = '0:00';
     songTimerDuration.innerText = convertTime(player.duration);
-    player.play();
     playButton.classList.toggle('playing');
+    player.play();
 }
 
 /* Event listeners para los botones */ 
